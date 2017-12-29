@@ -1,0 +1,29 @@
+{
+  "name": "google-maps-reference-guide",
+  "version": "1.0.0",
+  "description": "Understanding the Google Maps API in detail",
+  "main": "index.js",
+  "scripts": {
+    "start": "http-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ashwani-luhaniwal/google-maps-reference.git"
+  },
+  "keywords": [
+    "Google",
+    "Maps",
+    "JavaScript",
+    "API",
+    "Reference"
+  ],
+  "author": "Ashwani K Luhaniwal",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ashwani-luhaniwal/google-maps-reference/issues"
+  },
+  "homepage": "https://github.com/ashwani-luhaniwal/google-maps-reference#readme",
+  "devDependencies": {
+    "http-server": "^0.10.0"
+  }
+}

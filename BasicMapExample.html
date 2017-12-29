@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Basic Google Map Example</title>
+        <meta name="viewport" content="initial-scale=1.0">
+        <meta charset="UTF-8">
+        <style type="text/css">
+            /* Always set the map height explicitly to define the size of div element that
+               contains the map
+            */
+            #map {
+                height: 100%;
+            }
+            /* Optional: Makes the sample page fill the window. */
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="map"></div>
+
+        <script type="text/javascript">
+            var map;
+            function initMap() {
+                /*
+                    JavaScript class that represents a map is the "Map" class. Objects of this class define
+                    a single map on a page. (You may create more than one instance of this class - each 
+                    object will define a separate map on the page). We create a new instance of this class
+                    using JavaScript "new" operator. When you create a new map instance, you specify a
+                    <div> HTML element in the page as a container for the map.
+                    This code defines a variable (named map) and assigns that variable to a new Map object.
+                    The function Map() is known as constructor and its defition as follows: 
+
+                        Map(mapDiv:Node, opts?:MapOptions)
+                    Creates new map inside of given HTML container - which is typically a div element - using
+                    any (optional) parameters that are passed.
+                */
+                map = new google.maps.Map(document.getElementById('map'), {
+                    center: {lat: -34.397, lng: 150.644},
+                    zoom: 8
+                });
+            }
+        </script>
+        <!-- 
+            Libraries: When loading Maps JavaScript API via the URL you may optionally load additional
+            libraries through use of the "libraries" URL parameter. Libraries are modules of code that
+            provide additional functionality to main Maps JavaScript API but are not loaded unless
+            you specifically request them.
+
+            Synchronously loading the API: In script tag that loads Maps JavaScript API, it is possible
+            to omit "async" attribute and "callback" parameter. This will cause loading of API to block
+            until API is downloaded. This will probably slow your page load. But it means you can write
+            subsequent script tags assuming that the API is already loaded.
+
+            The "async" attribute lets the browser render the rest of your website while Maps JavaScript 
+            API loads. When the API is ready, it will call the function specified using the 
+            "callback" parameter.
+            The "key" parameter contains your application's API key.
+         -->
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgncHE9VhehCiKENUJB0y19GURax6WXqk&callback=initMap" async defer></script>
+    </body>
+</html>
