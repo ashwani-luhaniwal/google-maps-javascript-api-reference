@@ -1,0 +1,87 @@
+<!--
+    ############################################
+    Using shapes and heatmaps to customize maps
+    ############################################
+    You can customize the markers to visualize additional data, like locations that have the
+    most earthquakes and their magnitude or depth.
+
+    Some options to customize the basic marker:
+    - Using circle size: You can draw circles with sizes that are relative to magnitude of an 
+      earthquake by using symbols. In this way, powerful earthquakes are represented as the
+      largest circles on map.
+    - Using heatmaps: The Heatmap Layer in the visualization library offers a simple yet powerful 
+      way of displaying the distribution of earthquakes. Heatmaps use colors to represent the 
+      density of points, making it easier to pick out areas of high activity. Heatmaps can also use
+      "WeightedLocations" so that bigger earthquakes are displayed more prominently in the 
+      heatmap.
+ -->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Mapping Earthquakes data by using Circles (shapes)</title>
+        <meta name="viewport" content="initial-scale=1.0">
+        <meta charset="UTF-8">
+        <style type="text/css">
+            #map {
+                height: 100%;
+            }
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <h3>Mapping Earthquakes data using Circles on Google Maps</h3>
+        <div id="map"></div>
+
+        <script type="text/javascript">
+            var map;
+            // initMap function initializes and adds map when the web page loads.
+            function initMap() {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 2,
+                    center: {lat: -33.865427, lng: 151.196123},
+                    mapTypeId: 'terrain'
+                });
+
+                // Create a <script> tag and set the USGS URL as the source.
+                var script = document.createElement('script');
+                // This example uses a local copy of GeoJSON stored at
+                // http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojsonp
+                script.src = 'https://developers.google.com/maps/documentation/javascript/examples/json/earthquake_GeoJSONP.js';
+                document.getElementsByTagName('head')[0].appendChild(script);
+
+                // Adds a style to Data Layer which calls the getCircle() function.
+                // Creates a custom image for the point instead of default red marker.
+                map.data.setStyle(function(feature) {
+                    var magnitude = feature.getProperty('mag');
+                    return {
+                        icon: getCircle(magnitude)
+                    };
+                });
+            }
+
+            // The "magnitude" property of earthquake is passed to this function.
+            // getCircle() draws a circle whose size is defined by magnitude value, and sends that
+            // circle back to be used as earthquake's custom marker.
+            function getCircle(magnitude) {
+                return {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    fillColor: 'red',
+                    fillOpacity: .2,
+                    scale: Math.pow(2, magnitude) / 2,
+                    strokeColor: 'white',
+                    strokeWeight: .5
+                };
+            }
+
+            function eqfeed_callback(results) {
+                map.data.addGeoJson(results);
+            }
+        </script>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgncHE9VhehCiKENUJB0y19GURax6WXqk&callback=initMap" async defer></script>
+    </body>
+</html>
