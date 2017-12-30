@@ -1,0 +1,63 @@
+<!--
+    Here, we will see how to visualize data on Google maps. The maps here visualize data about the
+    location of earthquakes and their magnitude.
+    We will be using real-time earthquake data from United States Geological Survey (USGS). The 
+    USGS website provides their data in a number of formats, which you can copy to your domain
+    for local access by your application. Here, we will requests JSONP directly from the
+    USGS servers by appending "script" tag to the head of document.
+ -->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Mapping Earthquakes by using Markers</title>
+        <meta name="viewport" content="initial-scale=1.0">
+        <meta charset="UTF-8">
+        <style type="text/css">
+            #map {
+                height: 100%;
+            }
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <h3>Mapping Earthquakes data using Markers on Google Maps</h3>
+        <div id="map"></div>
+
+        <script type="text/javascript">
+            var map;
+            // initMap function initializes and adds map when the web page loads.
+            function initMap() {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 2,
+                    center: new google.maps.LatLng(2.8, -187.3),
+                    mapTypeId: 'terrain'
+                });
+
+                // Create a <script> tag and set the USGS URL as the source.
+                var script = document.createElement('script');
+                // This example uses a local copy of GeoJSON stored at
+                // http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojsonp
+                script.src = 'https://developers.google.com/maps/documentation/javascript/examples/json/earthquake_GeoJSONP.js';
+                document.getElementsByTagName('head')[0].appendChild(script);
+            }
+
+            // Loop through the results array and place a marker for each set of coordinates
+            window.eqfeed_callback = function(results) {
+                for (var i = 0; i < results.features.length; i++) {
+                    var coords = results.features[i].geometry.coordinates;
+                    var latLng = new google.maps.LatLng(coords[1], coords[0]);
+                    var marker = new google.maps.Marker({
+                        position: latLng,
+                        map: map
+                    });
+                }
+            }
+        </script>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgncHE9VhCiKENUJB0y19GURax6WXqk&callback=initMap" async defer></script>
+    </body>
+</html>
