@@ -1,0 +1,110 @@
+<!--
+    Here, we will see how to import GeoJSON data from either a local or remote source, and display
+    it on your map. 
+
+    ##############################
+    Loading data from same domain
+    ##############################
+    The Google Maps Data Layer provides a container for arbitrary geospatial data (including GeoJSON).
+    If your data is in a file hosted on same domain as your Maps JavaScript API application, you can
+    load it using the map.data.loadGeoJson() method. The file must be on same domain, but you can
+    host it in a different subdomain. For example, you can make a request to files.example.com from 
+    www.example.com.
+        map.data.loadGeoJson('data.json');
+
+    ###############################
+    Loading data across domains
+    ###############################
+    You can also request data from a domain other than your own, if the domain's configuration allows
+    such as request. The standard for this permission is called "Cross-origin resource sharing (CORS)".
+    If a domain has allowed cross-domain requests, its response header should include following
+    declaration:
+        Access-Control-Allow-Origin: *
+
+    Loading data from such a domain is the same as loading JSON from the same domain:
+        map.data.loadGeoJson('http://www.CORS-ENABLED-SITE.com/data.json');
+
+    #####################
+    Requesting JSONP
+    #####################
+    The target domain must support requests for JSONP in order to use this technique.
+    To request JSONP, use createElement() to add a script tag to the head of your document.
+        var script = document.createElement('script');
+        script.src = 'url to jsonp';
+        document.getElementsByTagName('head')[0].appendChild(script);
+
+    When script runs, the target domain passes the data as an argument to another script,
+    usually named callback(). The target domain defines the callback script name, which is the
+    first name on the page when you load the target URL in a browser.
+    You must define the callback script in your code:
+        function eqfeed_callback(response) {
+            map.data.addGeoJson(response);
+        }
+    Use the addGeoJson() method to place the parsed GeoJSON data on map.
+    You can change the appearance of your data by adding GeoJSON data to Map object
+
+    GeoJSON is widely used open format for encoding geographic data, based on JSON. JavaScript
+    tools and methods designed for JSON data also work with GeoJSON.
+    JSONP stands for padded JSON. It is a communication method used in JavaScript programs
+    that run in web browsers, to request data from a server in different domain.
+ -->
+
+ <!DOCTYPE html>
+ <html lang="en">
+     <head>
+         <title>Importing or Showing Data in Google Maps</title>
+         <meta name="viewport" content="initial-scale=1.0">
+         <meta charset="UTF-8">
+         <style type="text/css">
+             #map {
+                 height: 100%;
+             }
+             html, body {
+                 height: 100%;
+                 margin: 0;
+                 padding: 0;
+             }
+         </style>
+     </head>
+     <body>
+         <h3>Google Map with imported data</h3>
+         <div id="map"></div>
+ 
+         <script type="text/javascript">
+
+            var map;
+
+            // initMap function initializes and adds map when the web page loads.
+            function initMap() {
+
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 2,
+                    center: new google.maps.LatLng(2.8, -187.3),
+                    mapTypeId: 'terrain'
+                });
+
+                // Create a <script> tag and set the USGS URL as the source.
+                var script = document.createElement('script');
+
+                // This example uses a local copy of GeoJSON stored at
+                // http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojsonp
+                script.src = 'https://developers.google.com/maps/documentation/javascript/examples/json/earthquake_GeoJSONP.js';
+                document.getElementsByTagName('head')[0].appendChild(script);
+            }
+
+            // Loop through the results array and place a marker for each set of coordinates
+            window.eqfeed_callback = function(results) {
+                for (var i = 0; i < results.features.length; i++) {
+                    var coords = results.features[i].geometry.coordinates;
+                    var latLng = new google.maps.LatLng(coords[1], coords[0]);
+                    var marker = new google.maps.Marker({
+                        position: latLng,
+                        map: map
+                    });
+                }
+            }
+
+        </script>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgncHEhehCiKENUJB0y19GURax6WXqk&callback=initMap" async defer></script>
+     </body>
+ </html>
