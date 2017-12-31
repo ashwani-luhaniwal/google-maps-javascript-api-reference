@@ -1,0 +1,68 @@
+<!--
+    ######################
+    45 degree Imagery
+    ######################
+    The Google Maps JavaScript API supports 45 degree imagery for certain locations. This high
+    resolution imagery provides perspective views towards each of the cardinal direction (North,
+    South, East, West). These images are available at higher zoom levels for supported map types.
+
+    The "satellite" and "hybrid" map types support 45 degree imagery at high zoom levels where
+    available. If the user zooms into a location for which such imagery exists, these map types
+    automatically alter their views in following manner:
+    - The satellite or hybrid imagery is replaced with imagery giving 45 degree perceptive, 
+      centered on the current location. By default, such views are oriented towards north. If 
+      the user zooms out, the default satellite or hybrid imagery appears again.
+    - The rotate control provides a combination of tilt and rotate options. If "rotateControl" is
+      true, a tilt control appears when 45 degree imagery is available. The tilt control allows
+      the user to tilt the imagery to 45 degree angle.
+    - When the imagery is tilted, a hook appears, allowing users to rotate the view 90 degree in
+      a clockwise direction.
+
+    Zooming out from a map type displaying 45 degree imagery reverts each of these changes,
+    re-establishing the original map types.
+
+    #########################################
+    Enabling and Disabling 45 degree Imagery
+    #########################################
+    You can disable 45 degree imagery by calling "setTilt(0)" on the "Map" object. To enable 45
+    degree imagery for supported map types, call setTilt(45).
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Aerial Simple Example (45 degreee Imagery Example)</title>
+        <meta name="viewport" content="initial-scale=1.0">
+        <meta charset="UTF-8">
+        <style type="text/css">
+            /* Always set the map height explicitly to define the size of div element that
+               contains the map
+            */
+            #map {
+                height: 100%;
+            }
+            /* Optional: Makes the sample page fill the window. */
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="map"></div>
+
+        <script type="text/javascript">
+            var map;
+            function initMap() {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    center: {lat: 36.964, lng: -122.015},
+                    zoom: 18,
+                    mapTypeId: 'satellite'
+                });
+                map.setTilt(45);
+            }
+        </script>
+         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgncHE9VhehCiKENB0y19GURax6WXqk&callback=initMap" async defer></script>
+     </body>
+ </html>
