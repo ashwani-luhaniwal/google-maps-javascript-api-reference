@@ -1,0 +1,82 @@
+<!--
+    #########
+    Heatmaps
+    #########
+    Heatmaps make it easy for viewers to understand the distribution of earthquakes, reported
+    by USGS. Rather than placing a marker on each epicenter, heatmaps use color and shape to
+    represent the distribution of data. Here, red represents areas of high earthquakes activity.
+ -->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Mapping Earthquakes data by using Heatmaps</title>
+        <meta name="viewport" content="initial-scale=1.0">
+        <meta charset="UTF-8">
+        <style type="text/css">
+            #map {
+                height: 100%;
+            }
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <h3>Mapping Earthquakes data using Heatmaps on Google Maps</h3>
+        <div id="map"></div>
+
+        <script type="text/javascript">
+            var map;
+            // initMap function initializes and adds map when the web page loads.
+            function initMap() {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 2,
+                    center: {lat: -33.865427, lng: 151.196123},
+                    mapTypeId: 'terrain'
+                });
+
+                // Create a <script> tag and set the USGS URL as the source.
+                var script = document.createElement('script');
+                // This example uses a local copy of GeoJSON stored at
+                // http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojsonp
+                script.src = 'https://developers.google.com/maps/documentation/javascript/examples/json/earthquake_GeoJSONP.js';
+                document.getElementsByTagName('head')[0].appendChild(script);
+            }
+
+            /*
+                The USGS data is passed to eqfeed_callback function. This adds the coordinates
+                of each earthquake to a heatmapData array. Thats array is then passed to the 
+                HeatmapLayer constructor, which creates the heatmap and displays it on the map.
+            */
+            function eqfeed_callback(results) {
+                var heatmapData = [];
+                for (var i = 0; i < results.features.length; i++) {
+                    var coords = results.features[i].geometry.coordinates;
+                    var latLng = new google.maps.LatLng(coords[1], coords[0]);
+                    var magnitude = results.features[i].properties.mag;
+                    // To weight the results by magnitude, you can pass WeightedLocation
+                    // objects to heatmapData array instead.
+                    var weightedLoc = {
+                        location: latLng,
+                        weight: Math.pow(2, magnitude)
+                    };
+                    heatmapData.push(weightedLoc);
+                }
+                var heatmap = new google.maps.visualization.HeatmapLayer({
+                    data: heatmapData,
+                    dissipating: false,
+                    map: map
+                });
+            }
+        </script>
+        <!-- 
+            The "visualization" library is used to display a heatmap.
+            It contains a "HeatmapLayer" class.
+            When using a library, it must be loaded when the Maps API JavaScript is called
+        -->
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgncHEhehCiKENUJB0y19GURax6WXqk&libraries=visualization&callback=initMap" async defer></script>
+    </body>
+</html>
