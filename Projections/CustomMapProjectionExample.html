@@ -1,0 +1,193 @@
+<!--
+    ##################
+    Projections
+    ##################
+    Projection can be defined as mapping of lattitude/longitude values into coordinates on
+    the projection's map
+    Projections in Maps JavaScript API must implement Projection interface. A Projection
+    implementation must provide not only a mapping from one coordinate system to another,
+    but a bi-directional mapping. That is, you must define how to translate from Earth
+    coordinates (LatLng object) to Projection class's world coordinate system, and vice
+    versa. 
+    Google uses Mercator projection to create its maps from geographic data and convert
+    events on map into geographic coordinates. You can obtain this projection by calling
+    getProjection() on Map. For most uses, this standard Projection will suffice, but you
+    may also define and use your own custom projections.
+
+    ############################
+    Implementing a Projection
+    ############################
+    When implementing a custom projection:
+    - The formulae for mapping lattitude and longitude coordinates into a Cartesian place
+      and vice versa. (Projection interface only supprts transformations into rectilinear
+      coordinates)
+    - Base tile size. All tiles must be rectangular.
+    - The "world size" of map using base tile set at zoom level 0. Note that for maps 
+      consisting of one tile at zoom 0, the world size and base tile size are identical.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Custom Map Projection Basic Example</title>
+        <meta name="viewport" content="initial-scale=1.0">
+        <meta charset="UTF-8">
+        <style type="text/css">
+            /* Always set the map height explicitly to define the size of div element that
+               contains the map
+            */
+            #map {
+                height: 100%;
+            }
+            /* Optional: Makes the sample page fill the window. */
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            #coords {
+                background-color: black;
+                color: white;
+                padding: 5px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="map"></div>
+        <div id="coords"></div>
+
+        <script type="text/javascript">
+            // This example defines an image map type using Gall-Peters Projection
+
+            var map;
+            function initMap() {
+                // Create a map. Use the Gall-Peters map type.
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 0,
+                    center: {lat: 0, lng: 0},
+                    mapTypeControl: false
+                });
+
+                initGallPeters();
+                map.mapTypes.set('gallPeters', gallPetersMapType);
+                map.setMapTypeId('gallPeters');
+
+                // Show the lat and lng under the mouse cursor.
+                var coordsDiv = document.getElementById('coords');
+                map.controls[google.maps.ControlPosition.TOP_CENTER].push(coordsDiv);
+                map.addListener('mousemove', function(event) {
+                    coordsDiv.textContent = 
+                        'lat: ' + Math.round(event.latLng.lat()) + ', ' +
+                        'lng: ' + Math.round(event.latLng.lng());
+                });
+
+                // Add some markers to the map
+                map.data.setStyle(function(feature) {
+                    return {
+                        title: feature.getProperty('name'),
+                        optimized: false
+                    };
+                });
+                map.data.addGeoJson(cities);
+            }
+
+            var gallPetersMapType;
+            function initGallPeters() {
+                var GALL_PETERS_RANGE_X = 800;
+                var GALL_PETERS_RANGE_Y = 512;
+
+                // Fetch Gall-Peters tiles stored locally on our server
+                gallPetersMapType = new google.maps.ImageMapType({
+                    getTileUrl: function(coord, zoom) {
+                        var scale = 1 << zoom;
+
+                        // Wrap tiles horizontally
+                        var x = ((coord.x % scale) + scale) % scale;
+
+                        // Don't wrap tiles vertically
+                        var y = coord.y;
+                        if (y < 0 || y >= scale) {
+                            return null;
+                        }
+
+                        return 'https://developers.google.com/maps/documentation/' +
+                                'javascript/examples/full/images/gall-peters_' + zoom +
+                                '_' + x + '_' + y + '.png';
+                    },
+                    tileSize: new google.maps.Size(GALL_PETERS_RANGE_X, GALL_PETERS_RANGE_Y),
+                    minZoom: 0,
+                    maxZoom: 1,
+                    name: 'Gall-Peters'
+                });
+
+                // Each projection provides 2 two methods which translate between these 2
+                // coordinate system 
+                // Describe the Gall-Peters projection used by these tiles.
+                gallPetersMapType.projection = {
+                    // Projection.fromLatLngToPoint() method converts a LatLng value into a world
+                    // coordinate. This method is used to position overlays on the map
+                    fromLatLngToPoint: function(latLng) {
+                        var latRadians = latLng.lat() * Math.PI / 180;
+                        return new google.maps.Point(
+                            GALL_PETERS_RANGE_X * (0.5 + latLng.lng() / 360),
+                            GALL_PETERS_RANGE_Y * (0.5 - 0.5 * Math.sin(latRadians))
+                        );
+                    },
+                    // Projection.fromPointToLatLng() method converts a world coordinate into a LatLng
+                    // value. This method is used to convert events such as clicks that happen on the
+                    // map into geographic coordinates.
+                    fromPointToLatLng: function(point, noWrap) {
+                        var x = point.x / GALL_PETERS_RANGE_X;
+                        var y = Math.max(0, Math.min(1, point.y / GALL_PETERS_RANGE_Y));
+
+                        return new google.maps.LatLng(
+                            Math.asin(1 - 2 * y) * 180 / Math.PI,
+                            -180 + 360 * x,
+                            noWrap
+                        );
+                    }
+                };
+            }
+
+            // GeoJSON, describing the locations and names of some cities.
+            var cities = {
+                type: 'FeatureCollection',
+                features: [{
+                    type: 'Feature',
+                    geometry: {type: 'Point', coordinates: [-87.650, 41.850]},
+                    properties: {name: 'Chicago'}
+                }, {
+                    type: 'Feature',
+                    geometry: {type: 'Point', coordinates: [-149.900, 61.218]},
+                    properties: {name: 'Anchorage'}
+                }, {
+                    type: 'Feature',
+                    geometry: {type: 'Point', coordinates: [-99.127, 19.427]},
+                    properties: {name: 'Mexico City'}
+                }, {
+                    type: 'Feature',
+                    geometry: {type: 'Point', coordinates: [-0.126, 51.500]},
+                    properties: {name: 'London'}
+                }, {
+                    type: 'Feature',
+                    geometry: {type: 'Point', coordinates: [28.045, -26.201]},
+                    properties: {name: 'Johannesburg'}
+                }, {
+                    type: 'Feature',
+                    geometry: {type: 'Point', coordinates: [15.322, -4.325]},
+                    properties: {name: 'Kinshasa'}
+                }, {
+                    type: 'Feature',
+                    geometry: {type: 'Point', coordinates: [151.207, -33.867]},
+                    properties: {name: 'Sydney'}
+                }, {
+                    type: 'Feature',
+                    geometry: {type: 'Point', coordinates: [0, 0]},
+                    properties: {name: '0°N 0°E'}
+                }]
+            };
+
+        </script>
+         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgncHVhehCiKENUJB0y19GURax6WXqk&callback=initMap" async defer></script>
+     </body>
+ </html>
