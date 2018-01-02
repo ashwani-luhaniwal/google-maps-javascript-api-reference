@@ -1,0 +1,64 @@
+<!--
+    #########################
+    Marker Animations
+    #########################
+    
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Marker Animations</title>
+        <meta name="viewport" content="initial-scale=1.0">
+        <meta charset="UTF-8">
+        <style type="text/css">
+            /* Always set the map height explicitly to define the size of div element that
+               contains the map
+            */
+            #map {
+                height: 100%;
+            }
+            /* Optional: Makes the sample page fill the window. */
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="map"></div>
+
+        <script type="text/javascript">
+            /*
+                Here we creates a marker using DROP animation. Clicking on the marker will
+                toggle the animation between a BOUNCE animation and no animation
+            */
+            var map, marker;
+
+            function initMap() {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 13,
+                    center: {lat: 59.325, lng: 18.070}
+                });
+
+                marker = new google.maps.Marker({
+                    map: map,
+                    draggable: true,
+                    animation: google.maps.Animation.DROP,
+                    position: {lat: 59.327, lng: 18.067}
+                });
+                marker.addListener('click', toggleBounce);
+            }
+
+            function toggleBounce() {
+                if (marker.getAnimation() !== null) {
+                    marker.setAnimation(null);
+                } else {
+                    marker.setAnimation(google.maps.Animation.BOUNCE);
+                }
+            }
+        </script>
+         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgncHEhehCiKENUJB0y19GURax6WXqk&callback=initMap" async defer></script>
+     </body>
+ </html>
