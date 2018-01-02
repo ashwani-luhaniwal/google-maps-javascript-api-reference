@@ -1,0 +1,69 @@
+<!--
+    #########################
+    Markers in Google Maps
+    #########################
+    Marker identifies a location on map.
+    You can set custom icon within marker's contructor or by calling setIcon() on marker.
+    Markers are designed to be interactive. 
+    By default they receive 'click' events so you can add an event listener to bring up
+    an info window displaying custom information.
+    You can allow users to move a marker on the map by setting the marker's "draggable"
+    property to "true".
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Understaning Markers on Google Map</title>
+        <meta name="viewport" content="initial-scale=1.0">
+        <meta charset="UTF-8">
+        <style type="text/css">
+            /* Always set the map height explicitly to define the size of div element that
+               contains the map
+            */
+            #map {
+                height: 100%;
+            }
+            /* Optional: Makes the sample page fill the window. */
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="map"></div>
+
+        <script type="text/javascript">
+            var map;
+            function initMap() {
+                var myLatLng = {lat: -25.363, lng: 131.044};
+
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 4,
+                    center: myLatLng
+                });
+
+                /*
+                    google.maps.Marker constructor takes a single "Marker options" object literal,
+                    specifying the initial properties of marker.
+
+                    If you don't specify the map in construtor, then marker is created but is not
+                    attached to the map. You can add the marker later by calling marker's setMap()
+                    method.
+                        marker.setMap(map);
+
+                    To remove the marker, call setMap() with null arguments
+                        marker.setMap(null);
+                */
+                var marker = new google.maps.Marker({
+                    position: myLatLng, // specifies LatLng, identify initial location of marker
+                    map: map,   // specifies Map on which to place the marker
+                    title: 'Marker Basic'   // tooltip of marker
+                });
+            }
+        </script>
+         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgncHVhehCiKENUJB0y19GURax6WXqk&callback=initMap" async defer></script>
+     </body>
+ </html>
