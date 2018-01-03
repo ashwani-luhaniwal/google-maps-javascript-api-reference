@@ -1,0 +1,77 @@
+<!--
+    ########################
+    Customize Marker Labels
+    ########################
+    Marker label is letter or number that appears inside a marker. You can specify a marker
+    label as either a string or a "MarkerLabel" object that includes a string and other 
+    label properties.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Customize Marker Labels</title>
+        <meta name="viewport" content="initial-scale=1.0">
+        <meta charset="UTF-8">
+        <style type="text/css">
+            /* Always set the map height explicitly to define the size of div element that
+               contains the map
+            */
+            #map {
+                height: 100%;
+            }
+            /* Optional: Makes the sample page fill the window. */
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="map"></div>
+
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgncHEhehCiKENUJB0y19GURax6WXqk"></script>
+        <script type="text/javascript">
+            /*
+                Here, markers appear when user clicks on map. Each marker labeled with a
+                single alphabetical character.
+            */
+            var map, labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            var labelIndex = 0;
+
+            function initialize() {
+                var bangalore = {lat: 12.97, lng: 77.59};
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 12,
+                    center: bangalore
+                });
+
+                // This event listener calls addMarker() when the map is clicked
+                google.maps.event.addListener(map, 'click', function(event) {
+                    addMarker(event.latLng, map);
+                });
+
+                // Add a marker at the center of map
+                addMarker(bangalore, map);
+            }
+
+            // Adds a marker to the map
+            function addMarker(location, map) {
+                // Add the marker at the clicked function, and add the next-available label
+                // for the array of alphabetical characters.
+                var marker = new google.maps.Marker({
+                    position: location,
+                    label: labels[labelIndex++ % labels.length],
+                    map: map
+                });
+                // When creating a marker, you can specify a "label" property in the "MarkerOptions"
+                // object. You can also call setLabel() on "Marker" object to set the label on
+                // existing marker.
+            }
+
+            google.maps.event.addDomListener(window, 'load', initialize);
+        </script>
+         
+     </body>
+ </html>
