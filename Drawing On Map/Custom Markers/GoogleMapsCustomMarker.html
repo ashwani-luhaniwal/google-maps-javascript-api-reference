@@ -1,0 +1,206 @@
+<!--
+    ########################
+    Create Custom Markers
+    ########################
+    Here we will change the icon of Google maps marker.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Creating a Custom Markers</title>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta charset="UTF-8">
+        <style type="text/css">
+            /* Always set the map height explicitly to define the size of div element that
+               contains the map
+            */
+            #map {
+                height: 100%;
+            }
+            /* Optional: Makes the sample page fill the window. */
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="map"></div>
+
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgncHhehCiKENUJB0y19GURax6WXqk&callback=initMap" async defer></script>
+        <script type="text/javascript">
+            var map;
+
+            // Initializes the map
+            function initMap() {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 16,
+                    center: new google.maps.LatLng(-33.91722, 151.23064),
+                    mapTypeId: 'roadmap'
+                });
+
+                var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+                var icons = {
+                    parking: {
+                        icon: iconBase + 'parking_lot_maps.png'
+                    },
+                    library: {
+                        icon: iconBase + 'library_maps.png'
+                    },
+                    info: {
+                        icon: iconBase + 'info-i_maps.png'
+                    }
+                };
+
+                var features = [
+                    {
+                        position: new google.maps.LatLng(-33.91721, 151.22630),
+                        type: 'info'
+                    }, {
+                        position: new google.maps.LatLng(-33.91539, 151.22820),
+                        type: 'info'
+                    }, {
+                        position: new google.maps.LatLng(-33.91747, 151.22912),
+                        type: 'info'
+                    }, {
+                        position: new google.maps.LatLng(-33.91910, 151.22907),
+                        type: 'info'
+                    }, {
+                        position: new google.maps.LatLng(-33.91725, 151.23011),
+                        type: 'info'
+                    }, {
+                        position: new google.maps.LatLng(-33.91872, 151.23089),
+                        type: 'info'
+                    }, {
+                        position: new google.maps.LatLng(-33.91784, 151.23094),
+                        type: 'info'
+                    }, {
+                        position: new google.maps.LatLng(-33.91682, 151.23149),
+                        type: 'info'
+                    }, {
+                        position: new google.maps.LatLng(-33.91790, 151.23463),
+                        type: 'info'
+                    }, {
+                        position: new google.maps.LatLng(-33.91666, 151.23468),
+                        type: 'info'
+                    }, {
+                        position: new google.maps.LatLng(-33.916988, 151.233640),
+                        type: 'info'
+                    }, {
+                        position: new google.maps.LatLng(-33.91662347903106, 151.22879464019775),
+                        type: 'parking'
+                    }, {
+                        position: new google.maps.LatLng(-33.916365282092855, 151.22937399734496),
+                        type: 'parking'
+                    }, {
+                        position: new google.maps.LatLng(-33.91665018901448, 151.2282474695587),
+                        type: 'parking'
+                    }, {
+                        position: new google.maps.LatLng(-33.919543720969806, 151.23112279762267),
+                        type: 'parking'
+                    }, {
+                        position: new google.maps.LatLng(-33.91608037421864, 151.23288232673644),
+                        type: 'parking'
+                    }, {
+                        position: new google.maps.LatLng(-33.91851096391805, 151.2344058214569),
+                        type: 'parking'
+                    }, {
+                        position: new google.maps.LatLng(-33.91818154739766, 151.2346203981781),
+                        type: 'parking'
+                    }, {
+                        position: new google.maps.LatLng(-33.91727341958453, 151.23348314155578),
+                        type: 'library'
+                    }
+                ];
+
+                // Create markers
+                features.forEach(function(feature) {
+                    var marker = new google.maps.Marker({
+                        position: feature.position,
+                        /*
+                            Adds the "icon" property to "MarkerOptions" object, to change the marker's
+                            icon. The "icon" property can be either a string or an "Icon" object
+                        */
+                        icon: icons[feature.type].icon,
+                        map: map
+                    });
+                });
+            }
+
+            // Defines the Popup Class
+            function definePopupClass() {
+                /*
+                    A customized popup on the map.
+                    @param {!google.maps.LatLng} position
+                    @param {!Element} content
+                    @constructor
+                    @extends {google.maps.OverlayView}
+                */
+                Popup = function(position, content) {
+                    this.position = position;
+
+                    content.classList.add('popup-bubble-content');
+
+                    var pixelOffset = document.createElement('div');
+                    pixelOffset.classList.add('popup-bubble-anchor');
+                    pixelOffset.appendChild(content);
+
+                    this.anchor = document.createElement('div');
+                    this.anchor.classList.add('popup-tip-anchor');
+                    this.anchor.appendChild(pixelOffset);
+
+                    // Optionally stop clicks, from bubbling up to the map
+                    this.stopEventPropagation();
+                };
+
+                // NOTE: google.maps.OverlayView is only defined once the Maps API has loaded.
+                // That is why Popup is defined inside initMap()
+                Popup.prototype = Object.create(google.maps.OverlayView.prototype);
+
+                // Called when the popup is added to the map
+                Popup.prototype.onAdd = function() {
+                    this.getPanes().floatPane.appendChild(this.anchor);
+                };
+
+                // Called when the popup is removed from the map
+                Popup.prototype.onRemove = function() {
+                    if (this.anchor.parentElement) {
+                        this.anchor.parentElement.removeChild(this.anchor);
+                    }
+                };
+
+                // Called when the popup needs to draw itself
+                Popup.prototype.draw = function() {
+                    var divPosition = this.getProjection().fromLatLngToDivPixel(this.position);
+                    
+                    // Hide the popup when it is far out of view
+                    var display = Math.abs(divPosition.x) < 4000 && Math.abs(divPosition.y) < 4000 ?
+                        'block' : 'none';
+
+                    if (display === 'block') {
+                        this.anchor.style.left = divPosition.x + 'px';
+                        this.anchor.style.top = divPosition.y + 'px';
+                    }
+                    if (this.anchor.style.display !== display) {
+                        this.anchor.style.display = display;
+                    }
+                };
+
+                // Stops clicks/drags from bubbling up to map
+                Popup.prototype.stopEventPropagation = function() {
+                    var anchor = this.anchor;
+                    anchor.style.cursor = 'auto';
+
+                    ['click', 'dblclick', 'contextmenu', 'wheel', 'mousedown', 'touchstart', 'pointerdown']
+                        .forEach(function(event) {
+                            anchor.addEventListener(event, function(e) {
+                                e.stopPropagation();
+                            });
+                        });
+                };
+            }
+        </script>
+     </body>
+ </html>
