@@ -1,0 +1,74 @@
+<!--
+    #######################
+    Simple Polylines Shape
+    #######################
+    To draw a line on your map, use a polyline. The "Polyline" class defines a linear overlay
+    of connected line segments on the map. A "Polyline" object consists of an array of
+    "LatLng" locations and creates a series of line segments that connect those locations 
+    in an ordered sequence.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Info Window with maxWidth</title>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta charset="UTF-8">
+        <style type="text/css">
+            /* Always set the map height explicitly to define the size of div element that
+               contains the map
+            */
+            #map {
+                height: 100%;
+            }
+            /* Optional: Makes the sample page fill the window. */
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="map"></div>
+
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgncHEhehCiKENUJB0y19GURax6WXqk&callback=initMap" async defer></script>
+        <script type="text/javascript">
+            // This example creates a 2-pixel-wide red polyline showing the path of the first
+            // trans-Pacific flight between Oakland, CA and Brisbane, Australia which was 
+            // made by Charles Kingsford Smith
+
+            var map;
+
+            // Initializes the map
+            function initMap() {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 3,
+                    center: {lat: 0, lng: -180},
+                    mapTypeId: 'terrain'
+                });
+
+                var flightPlanCoordinates = [
+                    {lat: 37.772, lng: -122.214},
+                    {lat: 21.291, lng: -157.821},
+                    {lat: -18.142, lng: 178.431},
+                    {lat: -27.467, lng: 153.027}
+                ];
+                /*
+                    Polyline constructor takes a set of "PolylineOptions" specifying the "LatLng"
+                    coordinates of the line and a set of styles to adjust the polyline's
+                    visual behavior
+                */
+                var flightPath = new google.maps.Polyline({
+                    path: flightPlanCoordinates,
+                    geodesic: true,
+                    strokeColor: '#ff0000', // specifies hexadecimal HTML color
+                    strokeOpacity: 1.0, // specifies numerical value between 0.0 and 1.0 for opacity
+                    strokeWeight: 2 // specifies width of line in pixels
+                });
+
+                flightPath.setMap(map);
+            }
+        </script>
+     </body>
+ </html>
