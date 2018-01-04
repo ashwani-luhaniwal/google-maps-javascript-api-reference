@@ -1,0 +1,98 @@
+<!--
+    #######################
+    Draggable Polygon
+    #######################
+    By default, a shape drawn on map will be fixed in position. 
+    When enabling dragging on polygon or polyline, you should also consider making the polygon
+    or polyline geodesic by setting its geodesic property to true.
+
+    A geodesic polygon will retain its true geographic shape when it is moved, causing the
+    polygon to appear distorted as it is moved north or south in Mercator projection. 
+    Non-geodesic polygons will always retain their initial appearance on screen.
+
+    In a geodesic polyline, the segments of polyline are drawn as the shortest path between
+    two points on Earth's surface, assuming the Earth is a sphere, as opposed to straight 
+    lines on Mercator projection
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Draggable Polygon</title>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta charset="UTF-8">
+        <style type="text/css">
+            /* Always set the map height explicitly to define the size of div element that
+               contains the map
+            */
+            #map {
+                height: 100%;
+            }
+            /* Optional: Makes the sample page fill the window. */
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="map"></div>
+
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgncHE9VhehCiKENUJB0y19GURax6WXqk&callback=initMap" async defer></script>
+        <script type="text/javascript">
+            // This example creates a draggable triangles on the map.
+            // Note also that the red triangle is geodesic, so its shape changes as you
+            // drag it north or south
+
+            var map;
+
+            // Initializes the map
+            function initMap() {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 1,
+                    center: {lat: 24.886, lng: -70.268},
+                    mapTypeId: 'terrain'
+                });
+
+                var blueCoords = [
+                    {lat: 25.774, lng: -60.190},
+                    {lat: 18.466, lng: -46.118},
+                    {lat: 32.321, lng: -44.757}
+                ];
+
+                var redCoords = [
+                    {lat: 25.774, lng: -80.190},
+                    {lat: 18.466, lng: -66.118},
+                    {lat: 32.321, lng: -64.757}
+                ];
+
+                // Construct a draggable red triangle with geodesic set to true
+                new google.maps.Polygon({
+                    map: map,
+                    paths: redCoords,
+                    strokeColor: '#ff0000',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: '#ff0000',
+                    fillOpacity: 0.35,
+                    draggable: true,
+                    geodesic: true
+                });
+
+                // Construct a draggable blue triangle with geodesic set to false
+                new google.maps.Polygon({
+                    map: map,
+                    paths: blueCoords,
+                    strokeColor: '#0000ff',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: '#0000ff',
+                    fillOpacity: 0.35,
+                    draggable: true,
+                    geodesic: false
+                });
+            }
+        </script>
+     </body>
+ </html>
