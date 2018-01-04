@@ -1,0 +1,64 @@
+<!--
+    #######################
+    Rectangle Zoom
+    #######################
+    This example creates rectangle each time user changes the zoom on the map. The size of
+    rectangle is determined by the viewport.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Rectangle Zoom</title>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta charset="UTF-8">
+        <style type="text/css">
+            /* Always set the map height explicitly to define the size of div element that
+               contains the map
+            */
+            #map {
+                height: 100%;
+            }
+            /* Optional: Makes the sample page fill the window. */
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="map"></div>
+
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgncHE9VhehCiKENUJB0y19GURax6WXqk&callback=initMap" async defer></script>
+        <script type="text/javascript">
+            // This example creates a reactangle based on the viewport on any 'zoom-changed' event
+
+            var map;
+
+            // Initializes the map
+            function initMap() {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 11,
+                    center: {lat: 40.748520, lng: -73.981687},
+                    mapTypeId: 'terrain'
+                });
+
+                var rectangle = new google.maps.Rectangle();
+
+                map.addListener('zoom_changed', function() {
+                    // Get the current bounds, which reflect the bounds before the zoom.
+                    rectangle.setOptions({
+                        strokeColor: '#ff0000',
+                        strokeOpacity: 0.8,
+                        strokeWeight: 2,
+                        fillColor: '#ff0000',
+                        fillOpacity: 0.35,
+                        map: map,
+                        bounds: map.getBounds()
+                    });
+                });
+            }
+        </script>
+     </body>
+ </html>
