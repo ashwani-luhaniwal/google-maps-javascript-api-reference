@@ -1,0 +1,75 @@
+<!--
+    #######################
+    Single Polygon Shape
+    #######################
+    Polygon represents an area enclosed by a closed path which is defined by a series of 
+    coordinates. Polygon objects are similar to Polyline objects in that they consist of a 
+    series of coordinates in an ordered sequence.
+    Polygon objects can describe complex shapes: 
+    - Multiple non-contiguous areas defined by single polygon.
+    - Areas with holes in them
+    - Intersections of one or more areas.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Simple Polygon Shape</title>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta charset="UTF-8">
+        <style type="text/css">
+            /* Always set the map height explicitly to define the size of div element that
+               contains the map
+            */
+            #map {
+                height: 100%;
+            }
+            /* Optional: Makes the sample page fill the window. */
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="map"></div>
+
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgncHE9VhehCiKENUJB0y19GURax6WXqk&callback=initMap" async defer></script>
+        <script type="text/javascript">
+            // This example creates a simple polygon representing the Bermuda Triangle
+
+            var map;
+
+            // Initializes the map
+            function initMap() {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 5,
+                    center: {lat: 24.886, lng: -70.268},
+                    mapTypeId: 'terrain'
+                });
+
+                // Define the LatLng coordinates for polygon's path
+                var triangleCoords = [
+                    {lat: 25.774, lng: -80.190},
+                    {lat: 18.466, lng: -66.118},
+                    {lat: 32.321, lng: -64.757},
+                    {lat: 25.774, lng: -80.190}
+                ];
+
+                // Construct the polygon
+                var bermudaTriangle = new google.maps.Polygon({
+                    // 'path' - specifies an array of arrays each of type MVCArray. Each array
+                    // defines a separate sequence of ordered "LatLng" coordinates.
+                    paths: triangleCoords, 
+                    strokeColor: '#ff0000',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: '#ff0000',
+                    fillOpacity: 0.35
+                });
+                bermudaTriangle.setMap(map);
+            }
+        </script>
+     </body>
+ </html>
