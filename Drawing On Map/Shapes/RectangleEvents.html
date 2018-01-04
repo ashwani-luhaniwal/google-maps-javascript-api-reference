@@ -1,0 +1,87 @@
+<!--
+    #######################
+    Rectangle Events
+    #######################
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Rectangle Events</title>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta charset="UTF-8">
+        <style type="text/css">
+            /* Always set the map height explicitly to define the size of div element that
+               contains the map
+            */
+            #map {
+                height: 100%;
+            }
+            /* Optional: Makes the sample page fill the window. */
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="map"></div>
+
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgncHE9VhehCiKENUJB0y19GURax6WXqk&callback=initMap" async defer></script>
+        <script type="text/javascript">
+            // this example adds a user-editable rectangle to the map. When the user changes the
+            // bounds of rectangle, an info window pops up displaying the new bounds.
+
+            var map, rectangle, infoWindow;
+
+            // Initializes the map
+            function initMap() {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 9,
+                    center: {lat: 44.5452, lng: -78.5389}
+                });
+
+                var bounds = {
+                    north: 44.599,
+                    south: 44.490,
+                    east: -78.443,
+                    west: -78.649
+                };
+
+                // Define the rectangle and set its editable property to true
+                rectangle = new google.maps.Rectangle({
+                    bounds: bounds,
+                    editable: true,
+                    draggable: true
+                });
+
+                rectangle.setMap(map);
+
+                // Add an event listener on the rectangle
+                rectangle.addListener('bounds_changed', showNewRect);
+
+                // Define an info window on the map
+                infoWindow = new google.maps.InfoWindow();
+            }
+
+            // Show the new coordinates for rectangle in an info window
+
+            // @this {google.maps.Rectangle}
+            function showNewRect(event) {
+                var ne = rectangle.getBounds().getNorthEast();
+                var sw = rectangle.getBounds().getSouthWest();
+
+                var contentString = '<b>Rectangle moved.</b><br />' +
+                    'New north-east corner: ' + ne.lat() + ', ' + ne.lng() + '<br />' +
+                    'New south-west corner: ' + sw.lat() + ', ' + sw.lng();
+
+                // Set the info window's content and position
+                infoWindow.setContent(contentString);
+                infoWindow.setPosition(ne);
+
+                infoWindow.open(map);
+            }
+        </script>
+     </body>
+ </html>
